@@ -1,0 +1,67 @@
+# Script version : 1.0.0
+# Script licence : CC0
+# Author : MarkZde (https://github.com/MarkZde/PlayOnLinux-Scripts)
+# Wine version : 6.18
+# PlayOnLinux version : 4.3.4
+
+#!/usr/bin/env playonlinux-bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+TITLE="SteuerSparErklärung 2022 (Steuererklärung 2021)"
+
+PREFIX="SteuerSparErklaerung2022fuer2021"
+
+WINE_VERSION="6.18"
+
+RESSOURCES_DIRECTORY="$POL_USER_ROOT/ressources/SteuerSparErklaerung"
+
+POL_SetupWindow_Init
+ 
+POL_Debug_Init
+
+POL_SetupWindow_presentation "$TITLE" "Akademische Arbeitsgemeinschaft Verlagsgesellschaft mbH - Steuert|i|pps" "https://www.steuertipps.de" "MarkZ (https://github.com/MarkZde/PlayOnLinux-Scripts)" "$PREFIX"
+ 
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate "$WINE_VERSION"
+
+Set_OS "win10"
+
+POL_Call POL_Install_vcrun2019
+
+POL_Call POL_Install_crypt32
+
+POL_Call POL_Install_FontsSmoothRGB
+
+mkdir -p $RESSOURCES_DIRECTORY
+
+POL_System_TmpCreate "$PREFIX"
+
+cd "$POL_System_TmpDir"
+
+SETUP_FILE=`$POL_WGET -O - https://download.steuertipps.de/software/SSE27Standard | grep -o 'Win-SteuerSparErklaerung_27.*.*.exe'`
+[ -z "$SETUP_FILE" ] && { POL_System_TmpDelete; POL_Debug_Fatal "$(eval_gettext 'An error happened during download.')"; }
+
+if [ ! -f $RESSOURCES_DIRECTORY/$SETUP_FILE ]; then
+  POL_Download `$POL_WGET -O - https://download.steuertipps.de/software/SSE27Standard | grep 'Win-SteuerSparErklaerung_27.*.*.exe' | sed 's/^.*href\="//' | sed 's/" download.*$//'`
+  mv `ls $SETUP_FILE*` $SETUP_FILE
+  [ ! -f $SETUP_FILE ] && { POL_System_TmpDelete; POL_Debug_Fatal "$(eval_gettext 'An error happened during download.')"; }
+  mv $SETUP_FILE $RESSOURCES_DIRECTORY
+fi
+
+POL_Wine_WaitBefore "$TITLE"
+POL_Wine "$RESSOURCES_DIRECTORY/$SETUP_FILE"
+POL_Wine_WaitExit "$TITLE"
+
+POL_System_TmpDelete
+ 
+POL_Shortcut "SSE.exe" "$TITLE"
+
+POL_Shortcut "SteuertippsCenter.exe" "SteuertippsCenter 2022 (Steuererklärung 2021)"
+ 
+POL_SetupWindow_message "$(eval_gettext 'Installation finished.')" "$TITLE"
+
+POL_SetupWindow_Close
+
+exit 0
+
