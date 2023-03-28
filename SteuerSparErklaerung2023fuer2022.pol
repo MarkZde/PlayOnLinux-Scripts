@@ -1,4 +1,4 @@
-# Script version : 1.0.0
+# Script version : 1.1.0
 # Script licence : CC0
 # Author : MarkZde (https://github.com/MarkZde/PlayOnLinux-Scripts)
 # Wine version : 6.18
@@ -53,9 +53,14 @@ POL_Wine_WaitBefore "$TITLE"
 POL_Wine "$RESSOURCES_DIRECTORY/$SETUP_FILE"
 POL_Wine_WaitExit "$TITLE"
 
+# QuickFix v28.25.51: corrupted license file
 find $POL_USER_ROOT/wineprefix/$PREFIX -name License.aavdrm | grep -v /Temp/ | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
 LICENSE_FILE_UNCORRUPTED=`find $POL_USER_ROOT/wineprefix/$PREFIX -name License.aavdrm`
 find $POL_USER_ROOT/wineprefix/$PREFIX -name License.aavdrm.bak | sed 's/\.bak$//' | xargs -n1 -d '\n' cp $LICENSE_FILE_UNCORRUPTED
+
+# QuickFix v28.27.58: program version is not up to date, although it is
+find $POL_USER_ROOT/wineprefix/$PREFIX -name -name OnlineUpdate.exe | grep "Steuer-Ratgeber 2023"      | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
+find $POL_USER_ROOT/wineprefix/$PREFIX -name -name OnlineUpdate.exe | grep "SteuerSparErklaerung 2023" | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
 
 POL_System_TmpDelete
  
