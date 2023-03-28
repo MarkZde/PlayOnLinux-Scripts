@@ -59,8 +59,8 @@ LICENSE_FILE_UNCORRUPTED=`find $POL_USER_ROOT/wineprefix/$PREFIX -name License.a
 find $POL_USER_ROOT/wineprefix/$PREFIX -name License.aavdrm.bak | sed 's/\.bak$//' | xargs -n1 -d '\n' cp $LICENSE_FILE_UNCORRUPTED
 
 # QuickFix v28.27.58: program version is not up to date, although it is
-find $POL_USER_ROOT/wineprefix/$PREFIX -name -name OnlineUpdate.exe | grep "Steuer-Ratgeber 2023"      | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
-find $POL_USER_ROOT/wineprefix/$PREFIX -name -name OnlineUpdate.exe | grep "SteuerSparErklaerung 2023" | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
+find $POL_USER_ROOT/wineprefix/$PREFIX -name OnlineUpdate.exe | grep "Steuer-Ratgeber 2023"      | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
+find $POL_USER_ROOT/wineprefix/$PREFIX -name OnlineUpdate.exe | grep "SteuerSparErklaerung 2023" | sed -e 'p;s/$/\.bak/' | xargs -n2 -d '\n' mv
 
 POL_System_TmpDelete
  
